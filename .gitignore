@@ -1,0 +1,40 @@
+# ROS 2 build artifacts
+build/
+install/
+log/
+
+# Python virtual environment (if used)
+venv/
+.venv/
+env/
+
+# IDE specific files (optional, but recommended)
+.vscode/
+.idea/
+__pycache__
+
+# Testing and coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.pytest_cache/
+
+# Sphinx documentation build directory (if documentation is generated within the repo)
+docs/_build/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Manifest files (usually generated automatically)
+*.manifest
+*.spec
+
+# Package related
+/resource
+/test
