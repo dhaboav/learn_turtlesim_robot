@@ -66,7 +66,7 @@ class TestDrive(Node):
 
                 elif self.state == "b":
                     self.state = "c"
-                    
+
                 else:
                     self.get_logger().info("Done")
                     self.call_kill_service("turtle1")

@@ -28,6 +28,8 @@ setup(
             f"pose_subs = {package_name}.pose_subs:main",
             f"turtle_controller = {package_name}.turtle_controller:main",
             f"test_drive = {package_name}.test_drive:main",
+            f"action_server = {package_name}.count_until_server:main",
+            f"action_client = {package_name}.count_until_client:main",
         ],
     },
 )
