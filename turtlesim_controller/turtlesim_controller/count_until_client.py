@@ -3,8 +3,7 @@ import rclpy
 from rclpy.action import ActionClient
 from rclpy.action.client import ClientGoalHandle
 from rclpy.node import Node
-
-from my_robot_interfaces.action import CountUntil
+from turtlesim_interfaces.action import CountUntil
 
 
 class CountUntilClientNode(Node):
