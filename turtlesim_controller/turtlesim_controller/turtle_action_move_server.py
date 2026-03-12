@@ -3,7 +3,7 @@ from math import atan2, sqrt
 
 import rclpy
 from geometry_msgs.msg import Twist
-from rclpy.action import ActionServer, GoalResponse
+from rclpy.action import ActionServer, CancelResponse, GoalResponse
 from rclpy.action.server import ServerGoalHandle
 from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.executors import ExternalShutdownException, MultiThreadedExecutor
@@ -23,6 +23,7 @@ class TurtleActionMoveServer(Node):
             execute_callback=self.execute_callback,
             callback_group=ReentrantCallbackGroup(),
             goal_callback=self.goal_callback,
+            cancel_callback=self.cancel_callback,
         )
 
         self._twist_pubs = self.create_publisher(Twist, "/turtle1/cmd_vel", 10)
@@ -39,11 +40,15 @@ class TurtleActionMoveServer(Node):
         self._turtle_pose = pose
 
     def goal_callback(self, goal_handle):
-        if goal_handle.target_x > 11.0 and goal_handle.target_y:
+        if goal_handle.target_x > 11.0 or goal_handle.target_y > 11.0:
             self.get_logger().warn("Goal out of bounds! Rejecting...")
             return GoalResponse.REJECT
 
         return GoalResponse.ACCEPT
+
+    def cancel_callback(self, goal_handle):
+        self.get_logger().info("Cancel request accepted")
+        CancelResponse.ACCEPT
 
     def execute_callback(self, goal_handle: ServerGoalHandle):
         target_x = goal_handle.request.target_x
@@ -53,15 +58,21 @@ class TurtleActionMoveServer(Node):
         while rclpy.ok():
             msg = Twist()
 
+            if goal_handle.is_cancel_requested:
+                goal_handle.canceled()
+                self.get_logger().info("Goal canceled by client.")
+                msg.linear.x = 0.0
+                return MoveToXY.Result(status="canceled")
+
             dx = target_x - self._turtle_pose.x
             dy = target_y - self._turtle_pose.y
             distance = sqrt(dx**2 + dy**2)
             angle_to_target = atan2(dy, dx)
             angle_error = angle_to_target - self._turtle_pose.theta
 
-            if abs(angle_error) > 0.01:
+            if abs(angle_error) > 0.001:
                 msg.angular.z = angle_error
-            elif distance > 0.1:
+            elif distance > 0.01:
                 msg.linear.x = distance * 1.5
             else:
                 self._status = "done"
@@ -80,10 +91,8 @@ class TurtleActionMoveServer(Node):
             )
 
         goal_handle.succeed()
-        result = MoveToXY.Result()
-        result.status = self._status
         self.get_logger().info(f"{self._status}")
-        return result
+        return MoveToXY.Result(status=self._status)
 
 
 def main(args=None):

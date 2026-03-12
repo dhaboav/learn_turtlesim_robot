@@ -40,11 +40,12 @@ class TurtleActionMoveClientNode(Node):
         result.add_done_callback(self.result_callback)
 
     def result_callback(self, future):
-        result = future.result().result
-        if result.status == "done":
-            rclpy.shutdown()
+        result = future.result().status # Use ros2 action status topics default code
 
-        self.get_logger().info(f"Result: {result.status}")
+        self.get_logger().info(f"Code result: {result}")
+        if result == 4:
+            self.get_logger().info("Shutdown node...")
+            rclpy.shutdown()
 
     def feedback_callback(self, feedback):
         msg = feedback.feedback
