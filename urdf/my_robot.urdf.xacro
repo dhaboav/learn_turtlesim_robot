@@ -3,6 +3,7 @@
 
     <!-- Other xacro files -->
     <xacro:include filename="materials.urdf.xacro" />
+    <xacro:include filename="inertia.urdf.xacro" />
 
     <!-- Xacro properties -->
     <xacro:property name="radius" value="0.1" />
@@ -18,6 +19,15 @@
                 <origin xyz="0 0 0" rpy="1.57 0 0" />
                 <material name="grey" />
             </visual>
+
+            <collision>
+                <geometry>
+                    <cylinder radius="${radius}" length="${length}" />
+                </geometry>
+                <origin xyz="0 0 0" rpy="1.57 0 0" />
+            </collision>
+
+            <xacro:cylinder_inertia mass="0.5" radius="${radius}" length="${length}"/>
         </link>
     </xacro:macro>
     
@@ -49,6 +59,13 @@
             <origin xyz="0 0 0.1" rpy="0 0 0" />
             <material name="green" />
         </visual>
+        <collision>
+            <geometry>
+                <box size="0.6 0.4 0.2" />
+            </geometry>
+            <origin xyz="0 0 0.1" rpy="0 0 0" />
+        </collision>
+        <xacro:box_inertia mass="5" x="0.6" y="0.4" z="0.2"/>
     </link>
 
     <link name="lidar_link">
@@ -69,6 +86,13 @@
             <origin xyz="0 0 0" rpy="0 0 0" />
             <material name="grey" />
         </visual>
+        <collision>
+            <geometry>
+                <sphere radius="${radius}" />
+            </geometry>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+        </collision>
+        <xacro:sphere_inertia mass="0.2" radius="0.1"/>
     </link>
     <xacro:wheels prefix="left" />
     <xacro:wheels prefix="right" />
@@ -79,5 +103,22 @@
     <xacro:fixed_joint prefix="base_caster_wheel" parent="main_body_link" child="caster_wheel_link" xyz="0.2 0 -0.05" rpy="0 0 0" />
     <xacro:continuous_joint prefix="base_left_wheel" parent="main_body_link" child="left_wheel_link" xyz="-0.15 0.225 0" rpy="0 0 0" axis="0 1 0"/>
     <xacro:continuous_joint prefix="base_right_wheel" parent="main_body_link" child="right_wheel_link" xyz="-0.15 -0.225 0" rpy="0 0 0" axis="0 1 0"/>
+
+    <!-- Gazebo Section -->
+    <gazebo>
+        <plugin
+            filename="gz-sim-diff-drive-system"
+            name="gz::sim::systems::DiffDrive">
+
+            <left_joint>base_left_wheel_joint</left_joint>
+            <right_joint>base_right_wheel_joint</right_joint>
+
+            <wheel_separation>0.45</wheel_separation>
+            <wheel_radius>0.1</wheel_radius>
+
+            <topic>cmd_vel</topic>
+
+        </plugin>
+    </gazebo>
    
 </robot>
