@@ -5,11 +5,10 @@ import rclpy
 from rclpy.action import ActionClient
 from rclpy.action.client import ClientGoalHandle
 from rclpy.node import Node
+from learn_ros_interfaces.action import MoveToXY
 
-from turtlesim_interfaces.action import MoveToXY
 
-
-class TurtleActionMoveClientNode(Node):
+class TurtleActClientNode(Node):
     def __init__(self):
         super().__init__("turtle_action_move_client")
         self._client = ActionClient(self, MoveToXY, "move_to_xy")
@@ -40,7 +39,7 @@ class TurtleActionMoveClientNode(Node):
         result.add_done_callback(self.result_callback)
 
     def result_callback(self, future):
-        result = future.result().status # Use ros2 action status topics default code
+        result = future.result().status  # Use ros2 action status topics default code
 
         self.get_logger().info(f"Code result: {result}")
         if result == 4:
@@ -56,7 +55,7 @@ class TurtleActionMoveClientNode(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = TurtleActionMoveClientNode()
+    node = TurtleActClientNode()
     input_target_x = float(sys.argv[1])
     input_target_y = float(sys.argv[2])
     node.send_goal(input_target_x, input_target_y)

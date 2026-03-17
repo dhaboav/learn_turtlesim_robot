@@ -9,11 +9,10 @@ from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.executors import ExternalShutdownException, MultiThreadedExecutor
 from rclpy.node import Node
 from turtlesim.msg import Pose
+from learn_ros_interfaces.action import MoveToXY
 
-from turtlesim_interfaces.action import MoveToXY
 
-
-class TurtleActionMoveServer(Node):
+class TurtleActServer(Node):
     def __init__(self):
         super().__init__("turtle_action_move_server")
         self._server = ActionServer(
@@ -97,7 +96,7 @@ class TurtleActionMoveServer(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = TurtleActionMoveServer()
+    node = TurtleActServer()
     executor = MultiThreadedExecutor()
     try:
         rclpy.spin(node, executor=executor)

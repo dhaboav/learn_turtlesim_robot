@@ -1,5 +1,6 @@
-from launch import LaunchDescription
 from launch_ros.actions import Node
+
+from launch import LaunchDescription
 
 
 def generate_launch_description():
@@ -11,13 +12,12 @@ def generate_launch_description():
         name="turtle_node",
     )
 
-    turtle_action_move_server_node = Node(
-        package="turtlesim_controller",
-        executable="turtle_act_move_server",
-        name="action_server_node",
+    turtle_act_server_node = Node(
+        package="learn_ros",
+        executable="turtle_server",
     )
 
     ld.add_action(turltesim_node)
-    ld.add_action(turtle_action_move_server_node)
+    ld.add_action(turtle_act_server_node)
 
     return ld
