@@ -63,6 +63,7 @@ def generate_launch_description():
         arguments=[
             "/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist",
             "/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan",
+            "/camera@sensor_msgs/msg/Image[gz.msgs.Image",
         ],
         output="screen",
     )
